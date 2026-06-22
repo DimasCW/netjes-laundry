@@ -12,6 +12,8 @@ services:
       NEXTAUTH_URL: "${NEXTAUTH_URL:-http://localhost:3000}"
       AUTH_SECRET: "${NEXTAUTH_SECRET:-netjes-laundry-secret}"
       FONNTE_TOKEN: "${FONNTE_TOKEN:-e5917cx2UnwvoCUptuzQ}"
+      WAHA_API_URL: "http://waha:3000"
+      WAHA_API_KEY: "${WAHA_API_KEY:-netjes_waha_secret_key_2026}"
     volumes:
       - sqlite_data:/app/prisma
     restart: unless-stopped
