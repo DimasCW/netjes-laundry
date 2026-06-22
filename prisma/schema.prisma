@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  nama         String        
+  email        String        @unique 
+  password     String        
+  role         String        @default("PEKERJA") 
+  createdAt    DateTime      @default(now()) @map("created_at")
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+
+model Service {
+  id          Int                 @id @default(autoincrement())
+  namaLayanan String              @map("nama_layanan") 
+  harga       Float             
+  unit        String              
+  createdAt   DateTime            @default(now()) @map("created_at")
+  details     TransactionDetail[]
+
+  @@map("services")
+}
+
+model Transaction {
+  id            Int                 @id @default(autoincrement())
+  userId        Int                 @map("user_id")
+  namaPelanggan String              @map("nama_pelanggan") 
+  nomorWa       String              @map("nomor_wa") 
+  trackingToken String              @unique @map("tracking_token") 
+  statusProses     String              @default("PENDING") @map("status_proses") 
+  statusPembayaran String              @default("BELUM_LUNAS") @map("status_pembayaran") 
+  totalBayar    Float             @map("total_bayar") 
+  createdAt     DateTime            @default(now()) @map("created_at")
+  user          User                @relation(fields: [userId], references: [id])
+  details       TransactionDetail[]
+
+  @@map("transactions")
+}
+
+
+model TransactionDetail {
+  id            Int         @id @default(autoincrement())
+  transactionId Int         @map("transaction_id")
+  serviceId     Int         @map("service_id")
+  qty           Float     
+  subtotal      Float     
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  service       Service     @relation(fields: [serviceId], references: [id])
+
+  @@map("transaction_details")
+}
